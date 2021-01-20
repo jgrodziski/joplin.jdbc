@@ -1,0 +1,6 @@
+{:paths     ["resources" "src"]
+ :deps {org.clojure/clojure {:mvn/version "1.8.0"},
+        joplin.core {:local/root "/Users/jeremiegrodziski/sandbox/joplin/joplin.core"
+                     ;:mvn/version "0.3.12-SNAPSHOT"
+                     },
+        ragtime/ragtime {:mvn/version "0.8.0"}}}
