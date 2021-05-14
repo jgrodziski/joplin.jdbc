@@ -1,7 +1,6 @@
 {:paths     ["resources" "src"]
  :deps {org.clojure/clojure {:mvn/version "1.8.0"},
         joplin.core {:git/url "https://github.com/jgrodziski/joplin.core"
-                     :sha "4664b0680680dc17b6772d0d950e79a8036d244f"
-                     },
+                     :sha "0beb0ec3b132c6221a3ae60181b771f7c1ac79c1"},
         ragtime/ragtime {:git/url "https://github.com/defsquare/ragtime"
-                         :sha "9602c4d24b2e82de8980db21e776a0d974aadbc4"}}}
+                         :sha "25d9ac16a9a7537727d836c9f763d76f8130b6f5"}}}
