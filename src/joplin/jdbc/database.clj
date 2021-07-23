@@ -1,7 +1,7 @@
 (ns joplin.jdbc.database
   (:require [clojure.set :as set]
             [joplin.core :refer :all]
-            [ragtime.jdbc :refer [map->SqlDatabase load-resources load-directory]]
+            [ragtime.jdbc :refer [map->SqlDatabase sql-database-datasource load-resources load-directory]]
             [ragtime.protocols :refer [DataStore]]))
 
 (defn- append-uri [target]
@@ -11,6 +11,14 @@
         (select-keys [:url :datasource :migrations-table])
         (assoc :db-spec uri)
         (merge uri)
+        (merge target))))
+
+(defn extract-datasource [target]
+  (let [datasource (:datasource (:db target))]
+    (-> (merge {:migrations-table "ragtime_migrations"}
+               (:db target))
+        (select-keys [:datasource :migrations-table])
+        (assoc :db-spec datasource)
         (merge target))))
 
 (defn- get-sql-migrations [path]
@@ -68,3 +76,27 @@
 
 (defmethod create-migration :jdbc [target id & args]
   (do-create-migration target id "joplin.jdbc.database"))
+
+;; ==============================================================================
+;; Migrations with a Datasource from a connection pool
+
+(defmethod migrate-db :jdbc-datasource [target & args]
+  (apply do-migrate (get-migrations (:migrator target))
+         (sql-database (extract-datasource target)) args))
+
+(defmethod rollback-db :jdbc-datasource [target amount-or-id & args]
+  (apply do-rollback (get-migrations (:migrator target))
+         (sql-database (extract-datasource target)) amount-or-id args))
+
+(defmethod seed-db :jdbc-datasource [target & args]
+  (apply do-seed-fn (get-migrations (:migrator target))
+         (sql-database (extract-datasource target)) target args))
+
+(defmethod pending-migrations :jdbc-datasource [target & args]
+  (do-pending-migrations (sql-database (extract-datasource target))
+                         (get-migrations (:migrator target))))
+
+(defmethod create-migration :jdbc-datasource [target id & args]
+  (do-create-migration target id "joplin.jdbc.database"))
+
+
