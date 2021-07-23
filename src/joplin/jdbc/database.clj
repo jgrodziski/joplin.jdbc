@@ -1,7 +1,7 @@
 (ns joplin.jdbc.database
   (:require [clojure.set :as set]
             [joplin.core :refer :all]
-            [ragtime.jdbc :refer [map->SqlDatabase sql-database-datasource load-resources load-directory]]
+            [ragtime.jdbc :refer [map->SqlDatabase sql-database load-resources load-directory]]
             [ragtime.protocols :refer [DataStore]]))
 
 (defn- append-uri [target]
